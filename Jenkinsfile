@@ -14,10 +14,16 @@ pipeline {
       }
     }
 
+    stage('Build with Maven') {
+      steps {
+        sh 'mvn clean package -DskipTests'
+      }
+    }
+
     stage('Build Docker Image') {
       steps {
         script {
-          sh "docker build -t ${ECR_REPO}:${IMAGE_TAG} ."
+          docker.build("${ECR_REPO}:${IMAGE_TAG}")
         }
       }
     }
@@ -34,20 +40,15 @@ pipeline {
 
     stage('Push Image to ECR') {
       steps {
-        script {
-          sh "docker push ${ECR_REPO}:${IMAGE_TAG}"
-        }
+        sh "docker push ${ECR_REPO}:${IMAGE_TAG}"
       }
     }
 
     stage('Deploy to EKS') {
       steps {
-        script {
-          // Assumes kubectl is configured on Jenkins server with access to EKS cluster
-          sh """
-          kubectl set image deployment/springboot-deployment springboot-container=${ECR_REPO}:${IMAGE_TAG} --record
-          """
-        }
+        sh """
+        kubectl set image deployment/springboot-deployment springboot-container=${ECR_REPO}:${IMAGE_TAG} --record
+        """
       }
     }
   }
