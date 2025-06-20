@@ -10,13 +10,14 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-          git branch: 'main', url: 'https://github.com/Saddam-Hossen/AWSDevicemanagement'      }
+        git branch: 'main', url: 'https://github.com/Saddam-Hossen/AWSDevicemanagement'
+      }
     }
 
     stage('Build Docker Image') {
       steps {
         script {
-          docker.build("${ECR_REPO}:${IMAGE_TAG}")
+          sh "docker build -t ${ECR_REPO}:${IMAGE_TAG} ."
         }
       }
     }
