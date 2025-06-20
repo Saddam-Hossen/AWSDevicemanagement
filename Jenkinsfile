@@ -10,7 +10,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git 'https://github.com/yourusername/your-springboot-repo.git'
+        git 'https://github.com/Saddam-Hossen/AWSDevicemanagement'
       }
     }
 
